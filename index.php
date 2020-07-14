@@ -1,7 +1,21 @@
+<?php
+if (!isset($_SESSION['error']) && empty($_SESSION['error']) || !isset($_SESSION['succes']) && empty($_SESSION['succes'])){
+    session_start();
+}
+require_once("controllers/logincontroller.php");
+$loginclass = new login();
+if(isset($_POST['btningresar'])){
+    $loginclass->ingresar($_POST);
+}else{
+    if (isset($_POST['btnregistrarse'])){
+        $loginclass->registrarse($_POST);
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>PlasticSkin Login</title>
+    <title>Movilbox Login</title>
     <link rel="icon" type="image/png" href="./vendors/img/favicon.png" />
     <!--JQUERY-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -35,26 +49,30 @@
             <div class="col-12 user-img">
                 <img src="./vendors/static/img/user.png" th:src="@{/img/user.png}"/>
             </div>
-            <form action="database/ingresar.php" class="col-12" method="post">
+            <form action="" class="col-12" method="post">
                 <div class="form-group" id="user-group">
                     <input required type="text" class="form-control" placeholder="Nombre de usuario" name="email"/>
                 </div>
                 <div class="form-group" id="contrasena-group">
                     <input required type="password" class="form-control" placeholder="Contrasena" name="password"/>
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i>  Ingresar </button>
+                <button id="btningresar" name="btningresar" type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i>  Ingresar </button>
                 <a style="color: white;" id="registrarse" name="registrarse" onclick="registrarse(this.name);" type="button" class="btn btn-info"><i class="fas fa-user-plus"></i>  Registrarse </a>
             </form>
             <div class="col-12 forgot">
                 <a href="#">Recordar contrasena?</a>
             </div>
-            <?php if (isset($_GET['error']) && !empty($_GET['error'])){ ?>
+            <?php if (isset($_SESSION['error']) && !empty($_SESSION['error'])){ ?>
                 <div th:if="${param.error}" class="alert alert-danger" role="alert">
-                    <?php echo str_replace('-', ' ', $_GET['error']); ?>
+                    <?php echo $_SESSION['error']; session_destroy(); ?>
                 </div>
             <?php } if (isset($_GET['success']) && !empty($_GET['success'])){?>
                 <div th:if="${param.logout}" class="alert alert-success" role="alert">
                     <?php echo str_replace('-', ' ', $_GET['success']); ?>
+                </div>
+            <?php } if (isset($_SESSION['success']) && !empty($_SESSION['success'])){?>
+                <div th:if="${param.error}" class="alert alert-success" role="alert">
+                    <?php echo $_SESSION['success']; session_destroy(); ?>
                 </div>
             <?php } ?>
         </div>
@@ -62,7 +80,7 @@
             <div class="col-12 user-img">
                 <img src="./vendors/static/img/user.png" th:src="@{/img/user.png}"/>
             </div>
-            <form action="database/registrarse.php" class="col-12" method="post">
+            <form action="" class="col-12" method="post">
                 <div class="form-group" id="address-card-o-group">
                     <input required type="text" class="form-control" placeholder="Nombre de usuario" name="username"/>
                 </div>
@@ -72,7 +90,7 @@
                 <div class="form-group" id="contrasena-group">
                     <input required type="password" class="form-control" placeholder="Contrasena" name="password"/>
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i>  Registrarse </button>
+                <button id="btnregistrarse" name="btnregistrarse" type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i>  Registrarse </button>
                 <a style="color: white;" id="iniciarsesion" name="iniciarsesion" onclick="registrarse(this.name);" type="button" class="btn btn-danger"><i class="fas fa-sign-in-alt"></i>  Iniciar sesión </a>
             </form>
         </div>
