@@ -66,9 +66,9 @@ session_start();
         <?php if (isset($res) && !empty($res)) { foreach ($res as $detalles) {?>
             <div class="col-md-4 mb-5">
                 <div class="card h-100">
-                    <div class="card-title"><h2 class="card-title"><?php echo $detalles["titulo"] ?></h2></div>
+                    <div style="text-align: center;" class="card-title"><h2 class="card-title"><?php echo $detalles["titulo"] ?></h2></div>
                     <div class="card-body">
-                        <img style="width: 90%" src="images/noticias/<?php echo $detalles["id"] ?>/<?php echo $detalles["imagen_portada"] ?>">
+                        <img style="width: 90%" src="images/noticias/<?php echo $detalles["titulo"] ?>/<?php echo $detalles["imagen_portada"] ?>">
                         <p class="card-text"><?php echo $detalles["descripcion"] ?></p>
                     </div>
                     <div class="card-footer">

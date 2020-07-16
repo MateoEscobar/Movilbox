@@ -78,7 +78,7 @@ if(isset($_GET["id"]) && !empty($_GET["id"])){
         <div class="col-lg-9">
 
             <div class="card mt-4">
-                <img style="width: 100%; height: 300px;" class="card-img-top img-fluid" src="images/noticias/<?php echo $datos[0]["id"] ?>/<?php echo $datos[0]["imagen_portada"] ?>" alt="">
+                <img style="width: 100%; height: 300px;" class="card-img-top img-fluid" src="images/noticias/<?php echo $datos[0]["titulo"] ?>/<?php echo $datos[0]["imagen_portada"] ?>" alt="">
                 <div class="card-body">
                     <h3 class="card-title"><?php print $datos[0]["titulo"]; ?></h3>
                     <h4><?php print $datos[0]["Fecha_ingreso"]; ?></h4>

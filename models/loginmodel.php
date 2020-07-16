@@ -2,7 +2,8 @@
 class loginmodel{
     private $con;
     function __construct() {
-        require_once("../../db/db.php");
+        define('__ROOT__', dirname(dirname(__FILE__)));
+        require_once(__ROOT__."/db/db.php");
         $classcon = new Conectar();
         $this->con = $classcon->conexion();
     }

@@ -3,6 +3,8 @@
 require_once("../../controllers/noticiascontroller.php");
 // se declara la conexion
 $con = new home();
+$datos = $con->editar($_GET["id"]);
+$id = $_GET['id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +75,8 @@ $con = new home();
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar" style="">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Acciones :</h6>
-                    <a class="collapse-item active" href="./nuevo">Agregar nueva noticia</a>
+                    <a class="collapse-item active">Editar</a>
+                    <a class="collapse-item " href="./nuevo">Agregar nueva noticia</a>
                     <a class="collapse-item" href="./">Listar noticias</a>
                 </div>
             </div>
@@ -189,17 +192,25 @@ $con = new home();
                         <div th:if="${param.error}" class="alert alert-success" role="alert">
                             <?php echo $_SESSION['successnoticias']; unset( $_SESSION["successnoticias"] );?>
                         </div>
+                    <?php } if (isset($_GET["success"]) && !empty($_GET["success"])){?>
+                        <div th:if="${param.error}" class="alert alert-success" role="alert">
+                            <?php echo str_replace("-", " ", $_GET["success"]);?>
+                        </div>
                     <?php } ?>
                     <div class="card-body">
                         <form method="post" id="formularioarticulonuevo" action="./nuevo" enctype="multipart/form-data">
+                            <div hidden class="form-group">
+                                <label for="inputid">ID</label>
+                                <input type="text" class="form-control" id="inputid" name="inputid" aria-describedby="textHelp" value="<?php echo $id?>">
+                            </div>
                             <div class="form-group">
                                 <label for="inputTitulo">Titulo</label>
-                                <input required type="text" class="form-control" id="inputTitulo" name="inputTitulo" aria-describedby="textHelp" placeholder="Ingrese un titulo">
+                                <input value="<?php print_r($datos[0]["titulo"]); ?>" required type="text" class="form-control" id="inputTitulo" name="inputTitulo" aria-describedby="textHelp" placeholder="Ingrese un titulo">
                             </div>
                             <div class="form-group">
                                 <label for="editor1">Descripción</label>
                                 <textarea required id="editor1" rows="10" cols="80" required class="form-control name="editor1" >
-
+                                    <?php print_r($datos[0]["descripcion"]); ?>
                                 </textarea>
                             </div>
                             <div class="form-group">
@@ -214,16 +225,19 @@ $con = new home();
                                 </div>
                                 <br>
                                 <p id="tagsactualizar"> </p>
-                                <input required hidden disabled name="inputpalabras_claveoculto" type="text" class="form-control" id="inputpalabras_claveoculto">
+                                <label>Claves viejas</label>
+                                <br>
+                                <strong style="color: red;">Al ingresar una clave nueva las claves viejas se borran.</strong>
+                                <input value="<?php print_r($datos[0]["palabras_clave"]); ?>" required disabled name="inputpalabras_claveoculto" type="text" class="form-control" id="inputpalabras_claveoculto">
                             </div>
                             <div class="form-group">
                                 <label for="Fechanoticia">Fecha creación</label>
-                                <input required type="date" class="form-control" id="Fechanoticia" name="Fechanoticia">
+                                <input value="<?php print_r($datos[0]["Fecha_ingreso"]); ?>" required type="date" class="form-control" id="Fechanoticia" name="Fechanoticia">
                             </div>
                             <div class="form-group">
                                 <label for="imagenportada">Imagen de portada:</label>
                                 <input required type="file" class="form-control" id="files" name="files[]">
-                                <img id="imagenanterior" name="imagenanterior" style="width: 100px; height: 100px; margin-top: 10px;">
+                                <img src="<?php if (isset($datos[0]["imagen_portada"]) && !empty($datos[0]["imagen_portada"])){ print("../../images/noticias/".$datos[0]["titulo"]."/".$datos[0]["imagen_portada"]); } ?>" id="imagenanterior" name="imagenanterior" style="width: 100px; height: 100px; margin-top: 10px;">
                             </div>
                             <a style="color: white;" class="btn btn-danger" href="../home">Volver</a>
                             <button type="button" onclick="guardar();" class="btn btn-primary">Guardar</button>
@@ -294,7 +308,7 @@ $con = new home();
         if (palabra_ingresar != ""){
             for (i; i < j; i++){
                 palabra_clave[i] = palabra_ingresar;
-                str = "<strong id='"+palabra_clave[i]+"' style='color: black'>"+palabra_ingresar+" <i style='color: red' class='fas fa-trash-alt fa-sm' onclick='eliminar("+palabra_ingresar+");'></i>,</strong>";
+                str = "<strong id='"+palabra_clave[i]+"' style='color: #000000'>"+palabra_ingresar+" <i style='color: red' class='fas fa-trash-alt fa-sm' onclick='eliminar("+palabra_ingresar+");'></i>,</strong>";
             }
             document.getElementById('inputpalabras_clave').value = "";
             document.getElementById('tagsactualizar').innerHTML += str;
@@ -323,47 +337,61 @@ $con = new home();
     });
     function guardar() {
         var value = CKEDITOR.instances['editor1'].getData()
+        var id = document.getElementById('inputid').value;
         var titulo = document.getElementById('inputTitulo').value;
         var palabras_claves = document.getElementById('inputpalabras_claveoculto').value;
         var fecha = document.getElementById('Fechanoticia').value;
-
+        let m = document.getElementById('files').value;
+        let e = "";
         //console.log(titulo,palabras_claves,fecha,archivo,value);
-        if(value !=="" && titulo !=="" && palabras_claves !=="" && fecha !=="" && archivo !=""){
-            let e = file["name"];
-            var formData = new FormData();
-            var files = $('#files')[0].files[0];
-            var ruta = ""+titulo;
-            formData.append('file',files);
-            formData.append('ruta',ruta);
-            $.ajax({
-                url: 'opciones/upload.php',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    if (response != 0) {
-                        $(".card-img-top").attr("src", response);
-                    } else {
-                        alert('Formato de imagen incorrecto.');
+        if(value !=="" && titulo !=="" && palabras_claves !=="" && fecha !==""){
+            if (m !== "") {
+                e = file["name"];
+                var formData = new FormData();
+                var files = $('#files')[0].files[0];
+                var ruta = "" + titulo;
+                formData.append('file', files);
+                formData.append('ruta', ruta);
+                $.ajax({
+                    url: 'opciones/upload.php',
+                    type: 'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response != 0) {
+                            $(".card-img-top").attr("src", response);
+                        } else {
+                            alert('Formato de imagen incorrecto.');
+                        }
                     }
-                }
-            });
+                });
+            }
             let formulario = new FormData();
+            formulario.append('id',id);
             formulario.append('titulo', titulo);
             formulario.append('imagen', e);
             formulario.append('descripcion', value);
             formulario.append('palabras_clave', palabras_claves);
             formulario.append('Fecha_ingreso', fecha);
             $.ajax({
-                url: './opciones/nuevo',
+                url: './opciones/editar',
                 type: 'post',
                 data: formulario,
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    if (response == 0) {
-                        window.location.replace("./index");
+                    console.log(response);
+                    if (response) {
+                        var parts = window.location.search.substr(1).split("&");
+                        var $_GET = {};
+                        for (var i = 0; i < parts.length; i++) {
+                            var temp = parts[i].split("=");
+                            $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+                        }
+                        var success = "Articulo-actualizado-correctamente.";
+                        //window.location.replace("./index");
+                        window.location.replace("./editar?id="+$_GET['id']+"&success="+success);
                     } else {
                         alert('Algo ha salido mal.');
                     }

@@ -190,6 +190,10 @@ $lista = $con->listar();
                         <div th:if="${param.error}" class="alert alert-success" role="alert">
                             <?php echo $_SESSION['successnoticias']; unset( $_SESSION["successnoticias"] );?>
                         </div>
+                    <?php } if (isset($_GET["e"]) && !empty($_GET["e"])){?>
+                        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                            <?php echo str_replace("-", " ", $_GET["e"]);?>
+                        </div>
                     <?php } ?>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -227,7 +231,7 @@ $lista = $con->listar();
                                         <td><?php echo $detalles["descripcion"] ?></td>
                                         <td><?php echo $detalles["palabras_clave"] ?></td>
                                         <td><?php echo $detalles["Fecha_ingreso"] ?></td>
-                                        <td><img style="width: 100px; height: 100px;" src="../../images/noticias/<?php echo $detalles["id"] ?>/<?php echo $detalles["imagen_portada"] ?>"></td>
+                                        <td><img style="width: 100px; height: 100px;" src="../../images/noticias/<?php echo $detalles["titulo"] ?>/<?php echo $detalles["imagen_portada"] ?>"></td>
                                         <td><a href="./editar?id=<?php echo $detalles["id"]; ?>" style="color: white;" class="btn btn-info">Editar</a> - <a data-toggle="modal" data-target="#Modaleliminar<?php echo $detalles["id"] ?>" style="color: white;" class="btn btn-danger">Eliminar</a></td>
                                     </tr>
                                 <?php } }?>
