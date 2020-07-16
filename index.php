@@ -1,101 +1,103 @@
 <?php
-if (!isset($_SESSION['error']) && empty($_SESSION['error']) || !isset($_SESSION['succes']) && empty($_SESSION['succes'])){
-    session_start();
-}
-require_once("controllers/logincontroller.php");
-$loginclass = new login();
-if(isset($_POST['btningresar'])){
-    $loginclass->ingresar($_POST);
-}else{
-    if (isset($_POST['btnregistrarse'])){
-        $loginclass->registrarse($_POST);
-    }
-}
+require_once("controllers/frontcontroller.php");
+$home = new front();
+$res = $home->listar();
+session_start();
 ?>
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
 <head>
-    <title>Movilbox Login</title>
-    <link rel="icon" type="image/png" href="./vendors/img/favicon.png" />
-    <!--JQUERY-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <!-- FRAMEWORK BOOTSTRAP para el estilo de la pagina-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <!-- Los iconos tipo Solid de Fontawesome-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
-    <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+    <title>Movilbox noticias</title>
 
-    <!-- Nuestro css-->
-    <link rel="stylesheet" type="text/css" href="./vendors/static/css/index.css" th:href="@{/css/index.css}">
-    <script>
-        function registrarse(nombre) {
-            if (nombre == "registrarse"){
-                document.getElementById('iniciarsesionformulario').style.display = 'none';
-                document.getElementById('registraseformulario').style.display = 'block';
-            }else{
-                document.getElementById('iniciarsesionformulario').style.display = 'block';
-                document.getElementById('registraseformulario').style.display = 'none';
-            }
-        }
-    </script>
+    <!-- Bootstrap core CSS -->
+    <link href="vendors/noticias/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="vendors/noticias/css/small-business.css" rel="stylesheet">
+
 </head>
+
 <body>
-<div class="modal-dialog text-center">
-    <div class="col-sm-8 main-section">
-        <div id="iniciarsesionformulario" name="iniciarsesionformulario" class="modal-content">
-            <div class="col-12 user-img">
-                <img src="./vendors/static/img/user.png" th:src="@{/img/user.png}"/>
-            </div>
-            <form action="" class="col-12" method="post">
-                <div class="form-group" id="user-group">
-                    <input required type="text" class="form-control" placeholder="Nombre de usuario" name="email"/>
-                </div>
-                <div class="form-group" id="contrasena-group">
-                    <input required type="password" class="form-control" placeholder="Contrasena" name="password"/>
-                </div>
-                <button id="btningresar" name="btningresar" type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i>  Ingresar </button>
-                <a style="color: white;" id="registrarse" name="registrarse" onclick="registrarse(this.name);" type="button" class="btn btn-info"><i class="fas fa-user-plus"></i>  Registrarse </a>
-            </form>
-            <div class="col-12 forgot">
-                <a href="#">Recordar contrasena?</a>
-            </div>
-            <?php if (isset($_SESSION['error']) && !empty($_SESSION['error'])){ ?>
-                <div th:if="${param.error}" class="alert alert-danger" role="alert">
-                    <?php echo $_SESSION['error']; session_destroy(); ?>
-                </div>
-            <?php } if (isset($_GET['success']) && !empty($_GET['success'])){?>
-                <div th:if="${param.logout}" class="alert alert-success" role="alert">
-                    <?php echo str_replace('-', ' ', $_GET['success']); ?>
-                </div>
-            <?php } if (isset($_SESSION['success']) && !empty($_SESSION['success'])){?>
-                <div th:if="${param.error}" class="alert alert-success" role="alert">
-                    <?php echo $_SESSION['success']; session_destroy(); ?>
-                </div>
-            <?php } ?>
-        </div>
-        <div id="registraseformulario" name="registraseformulario" class="modal-content" style="display: none;">
-            <div class="col-12 user-img">
-                <img src="./vendors/static/img/user.png" th:src="@{/img/user.png}"/>
-            </div>
-            <form action="" class="col-12" method="post">
-                <div class="form-group" id="address-card-o-group">
-                    <input required type="text" class="form-control" placeholder="Nombre de usuario" name="username"/>
-                </div>
-                <div class="form-group" id="mail-group">
-                    <input required type="email" class="form-control" placeholder="Correo" name="correo"/>
-                </div>
-                <div class="form-group" id="contrasena-group">
-                    <input required type="password" class="form-control" placeholder="Contrasena" name="password"/>
-                </div>
-                <button id="btnregistrarse" name="btnregistrarse" type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i>  Registrarse </button>
-                <a style="color: white;" id="iniciarsesion" name="iniciarsesion" onclick="registrarse(this.name);" type="button" class="btn btn-danger"><i class="fas fa-sign-in-alt"></i>  Iniciar sesión </a>
-            </form>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Movilbox</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./views/login/index">Iniciar sesión</a>
+                </li>
+            </ul>
         </div>
     </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Jumbotron Header -->
+    <header class="jumbotron my-4">
+        <h1 class="display-3">Bienvenidos Movilbox</h1>
+        <p class="lead">Lista de noticias</p>
+    </header>
+    <?php if (isset($_SESSION['errornoticias']) && !empty($_SESSION['errornoticias'])){ ?>
+        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+            <?php echo $_SESSION['errornoticias']; unset( $_SESSION["errornoticias"] ); ?>
+        </div>
+    <?php } ?>
+    <!-- Content Row -->
+    <div class="row">
+        <?php if (isset($res) && !empty($res)) { foreach ($res as $detalles) {?>
+            <div class="col-md-4 mb-5">
+                <div class="card h-100">
+                    <div class="card-title"><h2 class="card-title"><?php echo $detalles["titulo"] ?></h2></div>
+                    <div class="card-body">
+                        <img style="width: 90%" src="images/noticias/<?php echo $detalles["id"] ?>/<?php echo $detalles["imagen_portada"] ?>">
+                        <p class="card-text"><?php echo $detalles["descripcion"] ?></p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="./ver?id=<?php echo $detalles["id"] ?>" class="btn btn-primary btn-sm">Leer más</a>
+                    </div>
+                </div>
+            </div>
+        <?php } } ?>
+
+        <!-- /.col-md-4 -->
+
+    </div>
+    <!-- /.row -->
+
 </div>
-<footer style="color: white; text-align: center;">&copy; Copyright 2020 <a style="color: white;" href="https://www.facebook.com/Matheito.lds" target="_blank">Mateo Escobar</a></footer>
+<!-- /.container -->
+
+<!-- Footer -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Mateo Escobar &copy; 2020</p>
+    </div>
+    <!-- /.container -->
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendors/noticias/vendor/jquery/jquery.min.js"></script>
+<script src="vendors/noticias/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>

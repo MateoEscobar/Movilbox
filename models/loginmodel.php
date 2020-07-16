@@ -2,7 +2,7 @@
 class loginmodel{
     private $con;
     function __construct() {
-        require_once("db/db.php");
+        require_once("../../db/db.php");
         $classcon = new Conectar();
         $this->con = $classcon->conexion();
     }

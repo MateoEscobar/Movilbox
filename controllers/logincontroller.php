@@ -2,7 +2,7 @@
 class login{
     private $modelo;
     function __construct() {
-        require_once("models/loginmodel.php");
+        require_once("../../models/loginmodel.php");
         $this->modelo = new loginmodel();
     }
     public function ingresar($datos){
@@ -11,8 +11,8 @@ class login{
         $res = $this->modelo->buscar($email,$password);
         if (count($res)>0){
             if ($res[0]["activo"]==true){
-                $_SESSION['sessionusuario'] = $res;
-                header("location: views/home.php ");
+                $_SESSION['sessionusuariomovilbox'] = $res;
+                header("location: ../home.php ");
             }else{
                 $error = "Su usuario no se encuentra activo en nuestra plataforma, comunicate con nuestros administradores.";
                 $_SESSION['error'] = $error;

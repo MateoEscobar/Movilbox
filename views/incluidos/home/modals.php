@@ -1,5 +1,5 @@
 <?php
-foreach ($datos as $detalles){
+foreach ($lista as $detalles){
 ?>
     <!-- Logout Modal-->
     <div class="modal fade" id="Modaleliminar<?php echo $detalles["id"]; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -15,7 +15,7 @@ foreach ($datos as $detalles){
                     Seleccione "Eliminar" a continuación si desea eliminar el titulo: <td><?php echo $detalles["titulo"] ?></td></div>
                 <div class="modal-footer">
                     <button class="btn btn-success" type="button" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-danger" href="./incluidos/articulo/eliminar?id=<?php echo $detalles["id"]; ?>">Eliminar</a>
+                    <a class="btn btn-danger" href="./eliminar?id=<?php echo $detalles["id"]; ?>">Eliminar</a>
                 </div>
             </div>
         </div>
